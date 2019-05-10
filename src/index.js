@@ -1,4 +1,4 @@
-import wwObject from './wwObjectMap.vue'
+import wwObject from './wwObjectIframe.vue'
 
 const name = "__NAME__";
 const version = '__VERSION__';
@@ -25,6 +25,7 @@ const addComponent = function () {
                     items: [
                         {
                             name: 'OPTIONS',
+                            main: true,
                             text: {
                                 en: 'Options',
                                 fr: 'Options'
