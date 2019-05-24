@@ -1,7 +1,7 @@
 <template>
     <div class="ww-iframe">
         <div v-if="!source" class="placeholder">Iframe</div>
-        <div v-html="source"></div>
+        <div class="content" v-html="source"></div>
     </div>
 </template>
  
@@ -20,6 +20,7 @@ export default {
     },
     data() {
         return {
+            reset: false
         }
     },
     computed: {
@@ -30,15 +31,51 @@ export default {
             return this.wwObjectCtrl.getEditMode() == 'CONTENT'
         },
         source() {
-            return this.wwObject.content.data.source || null
+            return this.reset ? "" : (this.wwObject.content.data.source || null)
+        },
+        script() {
+            return this.wwObject.content.data.script || null
+        },
+        javascript() {
+            return this.wwObject.content.data.javascript || null
         }
     },
     watch: {
     },
     methods: {
-        init() {
-            this.loaded = true
+        async init() {
+            if (this.script) {
+                await this.loadScript();
+            }
+
+
+            if (this.javascript) {
+                this.loadJavascript();
+            }
         },
+
+        async loadScript() {
+            await wwLib.wwUtils.addScriptToHead(this.script);
+        },
+
+        loadJavascript() {
+            try {
+                eval(this.javascript)
+            } catch (error) {
+                console.error(error, "error");
+            }
+        },
+        reinit() {
+            this.reset = true
+            this.$nextTick(() => {
+                this.reset = false
+
+                this.init()
+
+
+            })
+        },
+        /* wwManager:start */
         async edit() {
             wwLib.wwObjectHover.setLock(this);
             let editList = {
@@ -79,6 +116,35 @@ export default {
                     fields: [
                         {
                             label: {
+                                en: 'Script (optional):',
+                                fr: 'Script (optionnel) :'
+                            },
+                            type: 'text',
+                            key: 'script',
+                            valueData: 'script',
+                            desc: {
+                                en: 'URL to the script that will be loaded with the iFrame',
+                                fr: 'Url du script qui sera chargé avec l\'iFrame'
+                            },
+                        },
+                        {
+                            label: {
+                                en: 'Javascript (optional):',
+                                fr: 'Javascript (optionnel) :'
+                            },
+                            type: 'textarea',
+                            key: 'javascript',
+                            valueData: 'javascript',
+                            desc: {
+                                en: 'Javascript that will be executed with the iFrame',
+                                fr: 'Javascript qui sera executé avec l\'iFrame'
+                            },
+                            style: {
+                                height: '200px'
+                            }
+                        },
+                        {
+                            label: {
                                 en: 'Source :',
                                 fr: 'Source'
                             },
@@ -110,7 +176,9 @@ export default {
                 firstPage: 'WWIFRAME_EDIT',
                 data: {
                     wwObject: this.wwObject,
-                    source: this.wwObject.content.data.source
+                    source: this.wwObject.content.data.source,
+                    script: this.wwObject.content.data.script,
+                    javascript: this.wwObject.content.data.javascript
                 }
             }
 
@@ -124,30 +192,31 @@ export default {
                 if (typeof (result.source) != 'undefined') {
                     this.wwObject.content.data.source = result.source;
                 }
+                if (typeof (result.script) != 'undefined') {
+                    this.wwObject.content.data.script = result.script;
+                }
+                if (typeof (result.javascript) != 'undefined') {
+                    this.wwObject.content.data.javascript = result.javascript;
+                }
 
                 this.wwObjectCtrl.update(this.wwObject);
                 this.wwObjectCtrl.globalEdit(result);
+                this.reinit()
             } catch (error) {
                 console.log(error);
             }
             wwLib.wwObjectHover.removeLock();
         }
+        /* wwManager:end */
     },
     mounted() {
         this.init();
 
-        wwLib.wwElementsStyle.applyAllStyles({
-            wwObject: this.wwObject,
-            lastWwObject: null,
-            element: this.$el,
-            noAnim: this.wwAttrs.wwNoAnim,
-            noClass: false,
-        });
-
         this.$emit('ww-loaded', this);
-
+        window.addEventListener("resize", this.reinit)
     },
     beforeDestroyed() {
+        window.removeEventListener("resize", this.reinit)
         //window.removeEventListener('resize', this.wwOnResize);
     }
 };
@@ -163,6 +232,9 @@ export default {
         height: 30px;
         background-color: #e4e4e4;
         text-align: center;
+    }
+    .content {
+        min-height: 20px;
     }
     iframe {
         width: 100%;
