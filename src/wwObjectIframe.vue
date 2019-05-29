@@ -234,10 +234,20 @@ export default {
         text-align: center;
     }
     .content {
-        min-height: 20px;
+        // height: 400px;
     }
     iframe {
         width: 100%;
     }
 }
 </style>
+<style lang=scss>
+.ww-iframe {
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+}
+</style>
+
