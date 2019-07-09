@@ -1,7 +1,9 @@
 <template>
     <div class="ww-iframe">
-        <div v-if="!source" class="placeholder">Iframe</div>
-        <div class="content" v-html="source"></div>
+        <div v-if="!source && !iframeSource" class="placeholder">Iframe</div>
+        <!-- <div v-else-if="iframeSource" class="content" v-html="iframeSource"></div>
+        <iframe v-else-if="source" ref="iframe" frameborder="0"></iframe>-->
+        <iframe ref="iframe" :srcdoc="source" frameborder="0"></iframe>
     </div>
 </template>
  
@@ -20,7 +22,8 @@ export default {
     },
     data() {
         return {
-            reset: false
+            reset: false,
+            iframeComplete: false
         }
     },
     computed: {
@@ -31,7 +34,14 @@ export default {
             return this.wwObjectCtrl.getEditMode() == 'CONTENT'
         },
         source() {
-            return this.reset ? "" : (this.wwObject.content.data.source || null)
+            if (this.reset) return null
+            return this.wwObject.content.data.source ? '<span></span>' + this.wwObject.content.data.source : null
+        },
+        iframeSource() {
+            if (this.reset) return null
+            let src = (this.wwObject.content.data.source || '').trim()
+            if (src.indexOf('<iframe') === 0) { return src }
+            return null
         },
         script() {
             return this.wwObject.content.data.script || null
@@ -44,6 +54,12 @@ export default {
     },
     methods: {
         async init() {
+
+            this.initIframe()
+            setTimeout(() => {
+                this.updateIframeHeight()
+            }, 700);
+
             if (this.script) {
                 await this.loadScript();
             }
@@ -74,6 +90,50 @@ export default {
 
 
             })
+        },
+        initIframe() {
+            if (!this.source) return;
+
+            let iframe = this.$refs.iframe
+            if (!iframe) return;
+            let iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+
+            // Update iframe height
+            iframe.onload = () => {
+
+                iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+
+                // Check for iframe inside to wait for
+                if (!iframeWin.document.body) return;
+
+                const childIframe = iframeWin.document.querySelector('iframe')
+                if (!childIframe) {
+                    this.updateIframeHeight()
+                    return;
+                }
+
+                const childIframeWin = childIframe.contentWindow || childIframe.contentDocument.parentWindow;
+                if (childIframeWin.document.readyState == 'complete') {
+                    this.updateIframeHeight()
+                } else {
+                    childIframe.onload = () => {
+                        this.updateIframeHeight()
+                    }
+                }
+            }
+
+            iframeWin.addEventListener('resize', () => {
+                if (iframeWin.document.body) {
+                    this.updateIframeHeight()
+                }
+            })
+
+        },
+        updateIframeHeight() {
+            let iframe = this.$refs.iframe
+            if (!iframe) return;
+            let iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+            iframe.style.height = (iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight) + 'px';
         },
         /* wwManager:start */
         async edit() {
@@ -116,35 +176,6 @@ export default {
                     fields: [
                         {
                             label: {
-                                en: 'Script (optional):',
-                                fr: 'Script (optionnel) :'
-                            },
-                            type: 'text',
-                            key: 'script',
-                            valueData: 'script',
-                            desc: {
-                                en: 'URL to the script that will be loaded with the iFrame',
-                                fr: 'Url du script qui sera chargé avec l\'iFrame'
-                            },
-                        },
-                        {
-                            label: {
-                                en: 'Javascript (optional):',
-                                fr: 'Javascript (optionnel) :'
-                            },
-                            type: 'textarea',
-                            key: 'javascript',
-                            valueData: 'javascript',
-                            desc: {
-                                en: 'Javascript that will be executed with the iFrame',
-                                fr: 'Javascript qui sera executé avec l\'iFrame'
-                            },
-                            style: {
-                                height: '200px'
-                            }
-                        },
-                        {
-                            label: {
                                 en: 'Source :',
                                 fr: 'Source'
                             },
@@ -152,13 +183,42 @@ export default {
                             key: 'source',
                             valueData: 'source',
                             desc: {
-                                en: 'This content will be added to the section',
-                                fr: 'Le contenu sera ajouter à la section'
+                                en: 'This content will be added in the element',
+                                fr: 'Le contenu sera ajouter à l\'élément'
                             },
                             style: {
                                 height: '600px'
                             }
                         }
+                        // {
+                        //     label: {
+                        //         en: 'Library (optional):',
+                        //         fr: 'Librairie (optionnel) :'
+                        //     },
+                        //     type: 'text',
+                        //     key: 'script',
+                        //     valueData: 'script',
+                        //     desc: {
+                        //         en: 'URL of the script that will be loaded with the iFrame',
+                        //         fr: 'URL du script qui sera chargé avec l\'iFrame'
+                        //     },
+                        // },
+                        // {
+                        //     label: {
+                        //         en: 'Javascript (optional):',
+                        //         fr: 'Javascript (optionnel) :'
+                        //     },
+                        //     type: 'textarea',
+                        //     key: 'javascript',
+                        //     valueData: 'javascript',
+                        //     desc: {
+                        //         en: 'Javascript that will be executed with the iFrame (no script tag)',
+                        //         fr: 'Javascript qui sera executé à l \'initialisation de l\'iFrame (pas de balise script)'
+                        //     },
+                        //     style: {
+                        //         height: '200px'
+                        //     }
+                        // },
                     ]
                 },
                 buttons: {
@@ -191,6 +251,7 @@ export default {
                 \================================================================================================*/
                 if (typeof (result.source) != 'undefined') {
                     this.wwObject.content.data.source = result.source;
+                    this.initIframe()
                 }
                 if (typeof (result.script) != 'undefined') {
                     this.wwObject.content.data.script = result.script;
@@ -217,7 +278,6 @@ export default {
     },
     beforeDestroyed() {
         window.removeEventListener("resize", this.reinit)
-        //window.removeEventListener('resize', this.wwOnResize);
     }
 };
 </script>
@@ -227,6 +287,7 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
+    min-height: 10px;
     .placeholder {
         width: 100%;
         height: 30px;
