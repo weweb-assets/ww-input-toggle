@@ -1,0 +1,31 @@
+{
+	"componentPath": "./src/wwObjectIframe.vue",
+	"content": {
+		"type": "ww-iframe",
+		"data": {}
+	},
+	"upsales": {
+		"wwAnalytics": {
+			"click": false
+		}
+	},
+	"cmsOptions": {
+		"wwObjectHover": {
+			"pointerEvents": true
+		},
+		"wwObjectMenu": {
+			"items": [
+				{
+					"name": "OPTIONS",
+					"main": true,
+					"text": {
+						"en": "Options",
+						"fr": "Options"
+					},
+					"icon": "wwi wwi-edit-other",
+					"action": "edit"
+				}
+			]
+		}
+	}
+}
