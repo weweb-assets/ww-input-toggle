@@ -14,7 +14,7 @@ export default {
         wwObjectCtrl: Object,
         wwAttrs: {
             type: Object,
-            defaultValue: {},
+            default: {},
         },
     },
     data() {
