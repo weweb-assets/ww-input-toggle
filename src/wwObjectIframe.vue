@@ -1,136 +1,120 @@
 <template>
     <div class="ww-iframe">
-        <div v-if="!source && !iframeSource" class="placeholder">Iframe</div>
-        <!-- <div v-else-if="iframeSource" class="content" v-html="iframeSource"></div>
-        <iframe v-else-if="source" ref="iframe" frameborder="0"></iframe>-->
-        <iframe ref="iframe" :srcdoc="source" frameborder="0"></iframe>
+        <iframe v-if="source && iframeSource" ref="iframe" :srcdoc="source" frameborder="0"></iframe>
+        <!-- wwManager:start -->
+        <div v-else class="placeholder">Iframe: click me to add code</div>
+        <!-- wwManager:end -->
     </div>
 </template>
- 
 
-<script>			
-import Vue from 'vue';
-
+<script>
 export default {
-    name: "__COMPONENT_NAME__",
+    name: '__COMPONENT_NAME__',
     props: {
         wwObjectCtrl: Object,
         wwAttrs: {
             type: Object,
-            default: {}
-        }
+            default: {},
+        },
     },
     data() {
         return {
             reset: false,
-            iframeComplete: false
-        }
+        };
     },
     computed: {
         wwObject() {
             return this.wwObjectCtrl.get();
         },
-        editMode() {
-            return this.wwObjectCtrl.getEditMode() == 'CONTENT'
-        },
         source() {
-            if (this.reset) return null
-            return this.wwObject.content.data.source ? '<span></span>' + this.wwObject.content.data.source : null
+            if (this.reset) return null;
+            return this.wwObject.content.data.source ? '<span></span>' + this.wwObject.content.data.source : null;
         },
         iframeSource() {
-            if (this.reset) return null
-            let src = (this.wwObject.content.data.source || '').trim()
-            if (src.indexOf('<iframe') === 0) { return src }
-            return null
+            if (this.reset) return null;
+            let src = (this.wwObject.content.data.source || '').trim();
+            if (src.indexOf('<iframe') === 0) {
+                return src;
+            }
+            return null;
         },
         script() {
-            return this.wwObject.content.data.script || null
+            return this.wwObject.content.data.script || null;
         },
         javascript() {
-            return this.wwObject.content.data.javascript || null
-        }
-    },
-    watch: {
+            return this.wwObject.content.data.javascript || null;
+        },
     },
     methods: {
         async init() {
+            this.initIframe();
 
-            this.initIframe()
             setTimeout(() => {
-                this.updateIframeHeight()
+                this.updateIframeHeight();
             }, 700);
 
             if (this.script) {
                 await this.loadScript();
             }
-
-
             if (this.javascript) {
                 this.loadJavascript();
             }
         },
-
         async loadScript() {
             await wwLib.wwUtils.addScriptToHead(this.script);
         },
-
         loadJavascript() {
             try {
-                eval(this.javascript)
+                eval(this.javascript);
             } catch (error) {
-                console.error(error, "error");
+                console.error(error, 'error');
             }
         },
         reinit() {
-            this.reset = true
+            this.reset = true;
             this.$nextTick(() => {
-                this.reset = false
-
-                this.init()
-
-
-            })
+                this.reset = false;
+                this.init();
+            });
         },
         initIframe() {
             if (!this.source) return;
 
-            let iframe = this.$refs.iframe
+            let iframe = this.$refs.iframe;
             if (!iframe) return;
             let iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
 
             // Update iframe height
             iframe.onload = () => {
-
                 iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
 
                 // Check for iframe inside to wait for
                 if (!iframeWin.document.body) return;
 
-                const childIframe = iframeWin.document.querySelector('iframe')
+                const childIframe = iframeWin.document.querySelector('iframe');
                 if (!childIframe) {
-                    this.updateIframeHeight()
+                    this.updateIframeHeight();
                     return;
                 }
 
                 const childIframeWin = childIframe.contentWindow || childIframe.contentDocument.parentWindow;
                 if (childIframeWin.document.readyState == 'complete') {
-                    this.updateIframeHeight()
+                    this.updateIframeHeight();
                 } else {
                     childIframe.onload = () => {
-                        this.updateIframeHeight()
-                    }
+                        this.updateIframeHeight();
+                    };
                 }
-            }
+            };
 
             iframeWin.addEventListener('resize', () => {
                 if (iframeWin.document.body) {
-                    this.updateIframeHeight()
+                    this.updateIframeHeight();
                 }
-            })
-
+            });
         },
         updateIframeHeight() {
-            let iframe = this.$refs.iframe
+            let iframe = this.$refs.iframe;
             if (!iframe) return;
             let iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
             iframe.style.height = (iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight) + 'px';
@@ -140,36 +124,40 @@ export default {
             wwLib.wwObjectHover.setLock(this);
             let editList = {
                 WWIFRAME_SOURCE: {
+                    separator: {
+                        en: 'Configuration',
+                        fr: 'Configuration',
+                    },
                     title: {
                         en: 'Add iframe source',
-                        fr: 'Ajouter la source de l\'iframe'
+                        fr: "Ajouter la source de l'iframe",
                     },
                     desc: {
                         en: 'Copy Paste the content',
-                        fr: 'Copier Coller le contenu'
+                        fr: 'Copier Coller le contenu',
                     },
                     icon: 'wwi wwi-config',
                     shortcut: 'c',
-                    next: 'WWIFRAME_SOURCE'
-                }
-            }
+                    next: 'WWIFRAME_SOURCE',
+                },
+            };
 
             wwLib.wwPopups.addStory('WWIFRAME_EDIT', {
                 title: {
                     en: 'Edit iframe',
-                    fr: 'Editer l\'iframe '
+                    fr: "Editer l'iframe ",
                 },
                 type: 'wwPopupEditWwObject',
                 buttons: null,
                 storyData: {
-                    list: editList
-                }
-            })
+                    list: editList,
+                },
+            });
 
             wwLib.wwPopups.addStory('WWIFRAME_SOURCE', {
                 title: {
                     en: 'Copy Paste the content',
-                    fr: 'Copier Coller le contenu'
+                    fr: 'Copier Coller le contenu',
                 },
                 type: 'wwPopupForm',
                 storyData: {
@@ -177,60 +165,31 @@ export default {
                         {
                             label: {
                                 en: 'Source :',
-                                fr: 'Source'
+                                fr: 'Source',
                             },
                             type: 'textarea',
                             key: 'source',
                             valueData: 'source',
                             desc: {
                                 en: 'This content will be added in the element',
-                                fr: 'Le contenu sera ajouter à l\'élément'
+                                fr: "Le contenu sera ajouter à l'élément",
                             },
                             style: {
-                                height: '600px'
-                            }
-                        }
-                        // {
-                        //     label: {
-                        //         en: 'Library (optional):',
-                        //         fr: 'Librairie (optionnel) :'
-                        //     },
-                        //     type: 'text',
-                        //     key: 'script',
-                        //     valueData: 'script',
-                        //     desc: {
-                        //         en: 'URL of the script that will be loaded with the iFrame',
-                        //         fr: 'URL du script qui sera chargé avec l\'iFrame'
-                        //     },
-                        // },
-                        // {
-                        //     label: {
-                        //         en: 'Javascript (optional):',
-                        //         fr: 'Javascript (optionnel) :'
-                        //     },
-                        //     type: 'textarea',
-                        //     key: 'javascript',
-                        //     valueData: 'javascript',
-                        //     desc: {
-                        //         en: 'Javascript that will be executed with the iFrame (no script tag)',
-                        //         fr: 'Javascript qui sera executé à l \'initialisation de l\'iFrame (pas de balise script)'
-                        //     },
-                        //     style: {
-                        //         height: '200px'
-                        //     }
-                        // },
-                    ]
+                                height: '600px',
+                            },
+                        },
+                    ],
                 },
                 buttons: {
                     NEXT: {
                         text: {
                             en: 'Finish',
-                            fr: 'Terminer'
+                            fr: 'Terminer',
                         },
-                        next: null
-                    }
-                }
-            })
+                        next: null,
+                    },
+                },
+            });
 
             let options = {
                 firstPage: 'WWIFRAME_EDIT',
@@ -238,47 +197,46 @@ export default {
                     wwObject: this.wwObject,
                     source: this.wwObject.content.data.source,
                     script: this.wwObject.content.data.script,
-                    javascript: this.wwObject.content.data.javascript
-                }
-            }
+                    javascript: this.wwObject.content.data.javascript,
+                },
+            };
 
             try {
                 const result = await wwLib.wwPopups.open(options);
-                console.log('RESULT : ', result)
 
                 /*=============================================m_ÔÔ_m=============================================\
                   STYLE
                 \================================================================================================*/
-                if (typeof (result.source) != 'undefined') {
+                if (typeof result.source != 'undefined') {
                     this.wwObject.content.data.source = result.source;
-                    this.initIframe()
+                    this.initIframe();
                 }
-                if (typeof (result.script) != 'undefined') {
+                if (typeof result.script != 'undefined') {
                     this.wwObject.content.data.script = result.script;
                 }
-                if (typeof (result.javascript) != 'undefined') {
+                if (typeof result.javascript != 'undefined') {
                     this.wwObject.content.data.javascript = result.javascript;
                 }
 
                 this.wwObjectCtrl.update(this.wwObject);
                 this.wwObjectCtrl.globalEdit(result);
-                this.reinit()
+                this.reinit();
             } catch (error) {
-                console.log(error);
+                wwLib.wwLog.error(error);
             }
             wwLib.wwObjectHover.removeLock();
-        }
+        },
         /* wwManager:end */
     },
     mounted() {
         this.init();
 
         this.$emit('ww-loaded', this);
-        window.addEventListener("resize", this.reinit)
+        window.addEventListener('resize', this.reinit);
     },
     beforeDestroyed() {
-        window.removeEventListener("resize", this.reinit)
-    }
+        window.removeEventListener('resize', this.reinit);
+    },
 };
 </script>
 
@@ -288,21 +246,23 @@ export default {
     width: 100%;
     height: 100%;
     min-height: 10px;
+    // wwManager:start
     .placeholder {
         width: 100%;
-        height: 30px;
+        height: 50px;
         background-color: #e4e4e4;
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    .content {
-        // height: 400px;
-    }
+    // wwManager:end
     iframe {
         width: 100%;
     }
 }
 </style>
-<style lang=scss>
+
+<style lang="scss">
 .ww-iframe {
     iframe {
         width: 100%;
@@ -311,4 +271,3 @@ export default {
     }
 }
 </style>
-
