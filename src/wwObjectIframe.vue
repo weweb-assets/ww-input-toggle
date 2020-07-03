@@ -1,6 +1,6 @@
 <template>
     <div class="ww-iframe">
-        <iframe v-if="source && iframeSource" ref="iframe" :srcdoc="source" frameborder="0"></iframe>
+        <iframe v-if="source" ref="iframe" :srcdoc="source" frameborder="0"></iframe>
         <!-- wwManager:start -->
         <div v-else class="placeholder">Iframe: click me to add code</div>
         <!-- wwManager:end -->
@@ -107,11 +107,13 @@ export default {
                 }
             };
 
+            /* wwManager:start */
             iframeWin.addEventListener('resize', () => {
                 if (iframeWin.document.body) {
                     this.updateIframeHeight();
                 }
             });
+            /* wwManager:end */
         },
         updateIframeHeight() {
             let iframe = this.$refs.iframe;
@@ -202,13 +204,15 @@ export default {
             };
 
             try {
-                const result = await wwLib.wwPopups.open(options);
+                const result = await wwLib.wwPopups.open(options)
+
 
                 /*=============================================m_ÔÔ_m=============================================\
                   STYLE
                 \================================================================================================*/
                 if (typeof result.source != 'undefined') {
                     this.wwObject.content.data.source = result.source;
+                    console.log(result)
                     this.initIframe();
                 }
                 if (typeof result.script != 'undefined') {
