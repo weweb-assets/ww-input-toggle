@@ -107,11 +107,13 @@ export default {
                 }
             };
 
+            /* wwManager:start */
             iframeWin.addEventListener('resize', () => {
                 if (iframeWin.document.body) {
                     this.updateIframeHeight();
                 }
             });
+            /* wwManager:end */
         },
         updateIframeHeight() {
             let iframe = this.$refs.iframe;
