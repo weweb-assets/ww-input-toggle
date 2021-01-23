@@ -26,6 +26,7 @@ export default {
     data() {
         return {
             reset: false,
+            iframeSource: undefined,
         };
     },
     computed: {
@@ -38,15 +39,7 @@ export default {
         },
         source() {
             if (this.reset) return null;
-            return this.content.source ? this.content.source : null;
-        },
-        iframeSource() {
-            if (this.reset) return null;
-            let src = (this.content.source || '').trim();
-            if (src.indexOf('<iframe') === 0) {
-                return src;
-            }
-            return null;
+            return this.iframeSource ? this.iframeSource : null;
         },
         script() {
             return this.content.script || null;
@@ -58,12 +51,6 @@ export default {
 
     methods: {
         async init() {
-            this.initIframe();
-
-            setTimeout(() => {
-                this.updateIframeHeight();
-            }, 700);
-
             if (this.script) {
                 await this.loadScript();
             }
@@ -76,7 +63,7 @@ export default {
                 const result = await openIframePopup({
                     source: this.content.source,
                 });
-                this.content.source = result.source;
+                this.iframeSource = result.source;
                 this.reinit();
             } catch (err) {
                 wwLib.wwLog.error(err);
