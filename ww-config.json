@@ -2,16 +2,17 @@
     "componentPath": "./src/wwObject.vue",
     "editor": {
         "label": {
-            "en": "My Component",
-            "fr": "Mon Composant"
+            "en": "ww-iframe",
+            "fr": "ww-iframe"
         },
-        "editElementMenu": {
-            "items": [
-                {
-                    "label": { "en": "Options", "fr": "Options" },
-                    "action": "edit"
+        "settingsOptions": {
+            "changeSource": {
+                "type": "Button",
+                "options": {
+                    "text": { "en": "Iframe source", "fr": "Source de l'iframe" },
+                    "action": "editIframe"
                 }
-            ]
+            }
         }
     }
 }

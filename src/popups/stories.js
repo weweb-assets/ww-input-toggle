@@ -1,36 +1,18 @@
 wwLib.wwPopups.addStory('WWIFRAME_SOURCE', {
     title: {
-        en: 'Copy Paste the content',
-        fr: 'Copier Coller le contenu',
+        en: 'Edit iframe source',
+        fr: "Editer la source de l'iframe",
     },
-    type: 'wwPopupForm',
-    storyData: {
-        fields: [
-            {
-                label: {
-                    en: 'Source :',
-                    fr: 'Source',
-                },
-                type: 'textarea',
-                key: 'source',
-                valueData: 'source',
-                desc: {
-                    en: 'This content will be added in the element',
-                    fr: "Le contenu sera ajouter à l'élément",
-                },
-                style: {
-                    height: '600px',
-                },
-            },
-        ],
-    },
+    type: 'wwHandleIframe',
+    size: wwLib.wwPopups.SIZES.MEDIUM,
+    storyData: {},
     buttons: {
         NEXT: {
             text: {
-                en: 'Finish',
-                fr: 'Terminer',
+                en: 'Save',
+                fr: 'Enregistrer',
             },
-            next: null,
+            next: false,
         },
     },
 });

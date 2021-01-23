@@ -1,7 +1,6 @@
 {
     "name": "ww-iframe",
     "repository": {
-        "type": "git",
         "url": "https://github.com/weweb-assets/ww-iframe"
     },
     "version": "1.0.0",

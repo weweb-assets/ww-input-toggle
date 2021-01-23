@@ -1,21 +1,27 @@
 <template>
-    <div class="ww-iframe">
-        <iframe v-if="source" ref="iframe" :srcdoc="source" frameborder="0"></iframe>
+    <div class="ww-iframe" ref="iframe" :class="{ isEditing: isEditing }">
+        <div v-if="source" class="iframe-holder" v-html="source"></div>
         <!-- wwManager:start -->
-        <div v-else class="placeholder">Iframe: click me to add code</div>
+        <div v-else class="placeholder">Iframe - Edit source in settings</div>
         <!-- wwManager:end -->
     </div>
 </template>
 
 <script>
 /* wwManager:start */
-import openPopup from './popups';
+import { openIframePopup } from './popups';
 /* wwManager:end */
 
 export default {
     name: '__COMPONENT_NAME__',
     props: {
+        /* wwEditor:start */
+        wwEditorState: Boolean,
+        /* wwEditor:end */
         content: Object,
+    },
+    wwDefaultContent: {
+        source: '',
     },
     data() {
         return {
@@ -23,9 +29,16 @@ export default {
         };
     },
     computed: {
+        isEditing() {
+            /* wwEditor:start */
+            return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
+            /* wwEditor:end */
+            // eslint-disable-next-line no-unreachable
+            return false;
+        },
         source() {
             if (this.reset) return null;
-            return this.content.source ? '<span></span>' + this.content.source : null;
+            return this.content.source ? this.content.source : null;
         },
         iframeSource() {
             if (this.reset) return null;
@@ -42,11 +55,7 @@ export default {
             return this.content.javascript || null;
         },
     },
-    watch: {
-        source() {
-            this.reinit();
-        },
-    },
+
     methods: {
         async init() {
             this.initIframe();
@@ -60,6 +69,17 @@ export default {
             }
             if (this.javascript) {
                 this.loadJavascript();
+            }
+        },
+        async editIframe() {
+            try {
+                const result = await openIframePopup({
+                    source: this.content.source,
+                });
+                this.content.source = result.source;
+                this.reinit();
+            } catch (err) {
+                wwLib.wwLog.error(err);
             }
         },
         async loadScript() {
@@ -79,59 +99,6 @@ export default {
                 this.init();
             });
         },
-        initIframe() {
-            if (!this.source) return;
-
-            let iframe = this.$refs.iframe;
-            if (!iframe) return;
-            let iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
-
-            // Update iframe height
-            iframe.onload = () => {
-                iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
-
-                // Check for iframe inside to wait for
-                if (!iframeWin.document.body) return;
-
-                const childIframe = iframeWin.document.querySelector('iframe');
-                if (!childIframe) {
-                    this.updateIframeHeight();
-                    return;
-                }
-
-                const childIframeWin = childIframe.contentWindow || childIframe.contentDocument.parentWindow;
-                if (childIframeWin.document.readyState == 'complete') {
-                    this.updateIframeHeight();
-                } else {
-                    childIframe.onload = () => {
-                        this.updateIframeHeight();
-                    };
-                }
-            };
-
-            /* wwManager:start */
-            iframeWin.addEventListener('resize', () => {
-                if (iframeWin.document.body) {
-                    this.updateIframeHeight();
-                }
-            });
-            /* wwManager:end */
-        },
-        updateIframeHeight() {
-            let iframe = this.$refs.iframe;
-            if (!iframe) return;
-            let iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
-            iframe.style.height =
-                (iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight) + 'px';
-        },
-        /* wwManager:start */
-        async edit() {
-            const update = await openPopup(this.content);
-            if (update) {
-                this.$emit('update', update);
-            }
-        },
-        /* wwManager:end */
     },
     mounted() {
         this.init();
@@ -149,18 +116,28 @@ export default {
     width: 100%;
     height: 100%;
     min-height: 10px;
+    .iframe-holder {
+        height: 100%;
+    }
     // wwManager:start
+    &.isEditing {
+        pointer-events: none;
+    }
     .placeholder {
         width: 100%;
-        height: 50px;
+        height: 100%;
+        min-height: 300px;
         background-color: #e4e4e4;
         display: flex;
         align-items: center;
         justify-content: center;
+        color: var(--ww-color-blue-500);
     }
     // wwManager:end
     iframe {
-        width: 100%;
+        position: relative;
+        width: 100% !important;
+        height: 100% !important;
     }
 }
 </style>
