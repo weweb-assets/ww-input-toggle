@@ -26,7 +26,6 @@ export default {
     data() {
         return {
             reset: false,
-            iframeSource: undefined,
         };
     },
     computed: {
@@ -39,7 +38,7 @@ export default {
         },
         source() {
             if (this.reset) return null;
-            return this.iframeSource ? this.iframeSource : null;
+            return this.content.source ? this.content.source : null;
         },
         script() {
             return this.content.script || null;
@@ -63,7 +62,7 @@ export default {
                 const result = await openIframePopup({
                     source: this.content.source,
                 });
-                this.iframeSource = result.source;
+                this.$emit('update', { source: result.source });
                 this.reinit();
             } catch (err) {
                 wwLib.wwLog.error(err);
