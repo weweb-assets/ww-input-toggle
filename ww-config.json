@@ -5,8 +5,8 @@
     },
     "editor": {
         "label": {
-            "en": "ww-iframe",
-            "fr": "ww-iframe"
+            "en": "iframe",
+            "fr": "iframe"
         },
         "settingsOptions": {
             "changeSource": {
