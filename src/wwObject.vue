@@ -16,7 +16,7 @@ export default {
     name: '__COMPONENT_NAME__',
     props: {
         /* wwEditor:start */
-        wwEditorState: Boolean,
+        wwEditorState: Object,
         /* wwEditor:end */
         content: Object,
     },
