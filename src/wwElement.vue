@@ -1,25 +1,25 @@
 <template>
-    <div class="ww-iframe" ref="iframe" :class="{ isEditing: isEditing }">
+    <div ref="iframe" class="ww-iframe" :class="{ isEditing: isEditing }">
         <div v-if="source" class="iframe-holder" v-html="source"></div>
-        <!-- wwManager:start -->
+        <!-- wwEditor:start -->
         <div v-else class="placeholder">Iframe - Edit source in settings</div>
-        <!-- wwManager:end -->
+        <!-- wwEditor:end -->
     </div>
 </template>
 
 <script>
-/* wwManager:start */
+/* wwEditor:start */
 import { openIframePopup } from './popups';
-/* wwManager:end */
+/* wwEditor:end */
 
 export default {
-    name: '__COMPONENT_NAME__',
     props: {
         /* wwEditor:start */
-        wwEditorState: Object,
+        wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
-        content: Object,
+        content: { type: Object, required: true },
     },
+    emits: ['update:content'],
     wwDefaultContent: {
         source: '',
     },
@@ -31,7 +31,7 @@ export default {
     computed: {
         isEditing() {
             /* wwEditor:start */
-            return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
+            return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
             /* wwEditor:end */
             // eslint-disable-next-line no-unreachable
             return false;
@@ -47,7 +47,10 @@ export default {
             return this.content.javascript || null;
         },
     },
-
+    mounted() {
+        this.init();
+        window.addEventListener('resize', this.reinit);
+    },
     methods: {
         async init() {
             if (this.script) {
@@ -62,7 +65,7 @@ export default {
                 const result = await openIframePopup({
                     source: this.content.source,
                 });
-                this.$emit('update', { source: result.source });
+                this.$emit('update:content', { source: result.source });
                 this.reinit();
             } catch (err) {
                 wwLib.wwLog.error(err);
@@ -75,7 +78,7 @@ export default {
             try {
                 eval(this.javascript);
             } catch (error) {
-                console.error(error, 'error');
+                wwLib.wwLog.error(error, 'error');
             }
         },
         reinit() {
@@ -86,11 +89,7 @@ export default {
             });
         },
     },
-    mounted() {
-        this.init();
-        window.addEventListener('resize', this.reinit);
-    },
-    beforeDestroyed() {
+    beforeUnmounted() {
         window.removeEventListener('resize', this.reinit);
     },
 };
@@ -105,7 +104,7 @@ export default {
     .iframe-holder {
         height: 100%;
     }
-    // wwManager:start
+    /* wwEditor:start */
     &.isEditing {
         pointer-events: none;
     }
@@ -119,7 +118,7 @@ export default {
         justify-content: center;
         color: var(--ww-color-blue-500);
     }
-    // wwManager:end
+    /* wwEditor:end */
     iframe {
         position: relative;
         width: 100% !important;

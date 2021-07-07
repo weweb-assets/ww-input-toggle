@@ -1,10 +1,10 @@
 <template>
     <div class="ww-iframe-popup ww-scroll-bar">
         <textarea
+            v-model="source"
             class="script__input ww-editor-input -textarea -large caption-m"
             rows="23"
             placeholder="Your iframe code"
-            v-model="source"
             @input="setResult($event)"
         ></textarea>
     </div>
@@ -12,7 +12,7 @@
 
 <script>
 export default {
-    name: 'wwHandleIframe',
+    name: 'WwHandleIframe',
     props: {
         options: {
             type: Object,
@@ -26,14 +26,15 @@ export default {
             source: undefined,
         };
     },
-    methods: {
-        setResult() {
-            this.options.result.source = this.source;
-        },
-    },
     mounted() {
         this.source = this.options.data.options.source;
         this.setResult();
+    },
+    methods: {
+        setResult() {
+            // eslint-disable-next-line vue/no-mutating-props
+            this.options.result.source = this.source;
+        },
     },
 };
 </script>
