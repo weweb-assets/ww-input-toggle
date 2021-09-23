@@ -20,9 +20,6 @@ export default {
         content: { type: Object, required: true },
     },
     emits: ['update:content'],
-    wwDefaultContent: {
-        source: '',
-    },
     data() {
         return {
             reset: false,
