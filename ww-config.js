@@ -7,6 +7,7 @@ export default {
             "en": "iframe",
             "fr": "iframe"
         },
+        icon: 'fontawesome/regular/window-maximize'
     },
     properties: {
         source: {
