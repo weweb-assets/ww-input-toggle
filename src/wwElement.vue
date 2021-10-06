@@ -1,8 +1,8 @@
 <template>
-    <iframe v-if="source" ref="iframe" class="ww-iframe" :src="source" :class="{ isEditing: isEditing }"/>
-    <div v-else  class="ww-iframe" :class="{ isEditing: isEditing }">
+    <div ref="iframe" class="ww-iframe" :class="{ isEditing: isEditing }">
+        <iframe v-if="source" class="iframe-holder" :src="source" />
         <!-- wwEditor:start -->
-        <div class="placeholder">Edit iFrame source in settings</div>
+        <div v-else class="placeholder">Edit iFrame source in settings</div>
         <!-- wwEditor:end -->
     </div>
 </template>
@@ -99,7 +99,10 @@ export default {
     height: 100%;
     min-height: 10px;
     .iframe-holder {
+        position: absolute;
         height: 100%;
+        width: 100%;
+        border: none;
     }
     /* wwEditor:start */
     &.isEditing {
