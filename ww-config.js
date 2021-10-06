@@ -4,22 +4,28 @@ export default {
     },
     "editor": {
         "label": {
-            "en": "iframe",
-            "fr": "iframe"
+            "en": "HTML",
+            "fr": "HTML"
         },
         icon: 'fontawesome/regular/window-maximize'
     },
     properties: {
         source: {
-            hidden: true,
+            label: {
+                en: 'HTML'
+            },
+            type: "Textarea",
+            "options": {
+                "row": 20
+            },
             defaultValue: '',
         },
         changeSource: {
             type: 'Button',
             editorOnly: true,
             "options": {
-                "text": { "en": "Iframe source", "fr": "Source de l'iframe" },
-                "action": "editIframe"
+                "text": { "en": "Edit HTML", "fr": "Editer le HTML" },
+                "action": "editHTML"
             }
         }
     }
