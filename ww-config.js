@@ -18,6 +18,7 @@ export default {
             "options": {
                 "row": 20
             },
+            bindable: true,
             defaultValue: '',
         },
         changeSource: {
