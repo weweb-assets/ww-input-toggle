@@ -1,10 +1,10 @@
 <template>
-    <div class="ww-html-popup ww-scroll-bar">
+    <div class="ww-iframe-popup ww-scroll-bar">
         <textarea
             v-model="source"
             class="script__input ww-editor-input -textarea -large caption-m"
             rows="23"
-            placeholder="Your HTML"
+            placeholder="Your iFrame source"
             @input="setResult($event)"
         ></textarea>
     </div>
@@ -12,7 +12,7 @@
 
 <script>
 export default {
-    name: 'WwHandleHTML',
+    name: 'WwHandleIFrame',
     props: {
         options: {
             type: Object,
@@ -40,7 +40,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.ww-html-popup {
+.ww-iframe-popup {
     .script__input {
         width: 100%;
     }

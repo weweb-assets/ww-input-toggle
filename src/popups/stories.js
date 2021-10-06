@@ -1,9 +1,9 @@
-wwLib.wwPopups.addStory('WWHTML_SOURCE', {
+wwLib.wwPopups.addStory('WWIFRAME_SOURCE', {
     title: {
-        en: 'Edit HTML',
-        fr: "Editer le HTML",
+        en: 'Edit iFrame source',
+        fr: "Editer la source de l'iFrame",
     },
-    type: 'wwHandleHTML',
+    type: 'wwHandleIFrame',
     size: wwLib.wwPopups.SIZES.MEDIUM,
     storyData: {},
     buttons: {

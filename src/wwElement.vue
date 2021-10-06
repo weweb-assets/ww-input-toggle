@@ -1,15 +1,15 @@
 <template>
-    <div ref="html" class="ww-html" :class="{ isEditing: isEditing }">
-        <div v-if="source" class="html-holder" v-html="source"></div>
+    <div ref="iframe" class="ww-iframe" :class="{ isEditing: isEditing }">
+        <iframe v-if="source" class="iframe-holder" :src="source" />
         <!-- wwEditor:start -->
-        <div v-else class="placeholder">Edit HTML in settings</div>
+        <div v-else class="placeholder">Edit iFrame source in settings</div>
         <!-- wwEditor:end -->
     </div>
 </template>
 
 <script>
 /* wwEditor:start */
-import { openHTMLPopup } from './popups';
+import { openIFramePopup } from './popups';
 /* wwEditor:end */
 
 export default {
@@ -57,9 +57,9 @@ export default {
                 this.loadJavascript();
             }
         },
-        async editHTML() {
+        async editIFrame() {
             try {
-                const result = await openHTMLPopup({
+                const result = await openIFramePopup({
                     source: this.content.source,
                 });
                 this.$emit('update:content', { source: result.source });
@@ -93,12 +93,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.ww-html {
+.ww-iframe {
     position: relative;
     width: 100%;
     height: 100%;
     min-height: 10px;
-    .html-holder {
+    .iframe-holder {
         height: 100%;
     }
     /* wwEditor:start */
@@ -116,20 +116,5 @@ export default {
         color: var(--ww-color-blue-500);
     }
     /* wwEditor:end */
-    html {
-        position: relative;
-        width: 100% !important;
-        height: 100% !important;
-    }
-}
-</style>
-
-<style lang="scss">
-.ww-html {
-    html {
-        width: 100%;
-        height: 100%;
-        border: 0;
-    }
 }
 </style>

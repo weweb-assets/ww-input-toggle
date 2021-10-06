@@ -1,12 +1,12 @@
-import wwHandleHTML from './wwHandleHTML.vue';
-wwLib.wwPopups.addPopup('wwHandleHTML', wwHandleHTML);
+import wwHandleIFrame from './wwHandleIFrame.vue';
+wwLib.wwPopups.addPopup('wwHandleIFrame', wwHandleIFrame);
 
 import './stories';
 
-export async function openHTMLPopup(options) {
+export async function openIFramePopup(options) {
     try {
         return await wwLib.wwPopups.open({
-            firstPage: 'WWHTML_SOURCE',
+            firstPage: 'WWIFRAME_SOURCE',
             data: {
                 options,
             },
