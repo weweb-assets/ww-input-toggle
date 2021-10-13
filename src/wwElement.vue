@@ -1,7 +1,12 @@
 <template>
     <div class="ww-webapp-search" :style="cssVariables">
-        <input ref="searchInput" @input="handleInputChange" type="text" />
-        <wwElement class="submitButton" @click="handleClick" v-bind="content.submitButton"></wwElement>
+        <wwElement
+            ref="searchInput"
+            class="submitButton"
+            v-bind="content.textInput"
+            @input-change="handleInputChange"
+        ></wwElement>
+        <wwElement class="submitButton" v-bind="content.submitButton" @click="handleClick"></wwElement>
     </div>
 </template>
 
@@ -45,12 +50,13 @@ export default {
     mounted() {},
     methods: {
         handleInputChange(event) {
-            if (this.content.submitEvent !== 'debounce') return;
+            console.log(event);
+            // if (this.content.submitEvent !== 'debounce') return;
 
-            clearTimeout(this.debounce);
-            this.debounce = setTimeout(() => {
-                this.updateVariableValue(event.target.value);
-            }, this.content.debounceDelay);
+            // clearTimeout(this.debounce);
+            // this.debounce = setTimeout(() => {
+            //     this.updateVariableValue(event.target.value);
+            // }, this.content.debounceDelay);
         },
         handleClick() {
             const value = this.$refs.searchInput.value;

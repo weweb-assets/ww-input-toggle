@@ -75,5 +75,9 @@ export default {
             hidden: true,
             defaultValue: { isWwObject: true, type: 'ww-button' },
         },
+        textInput: {
+            hidden: true,
+            defaultValue: { isWwObject: true, type: 'input' },
+        },
     },
 };
