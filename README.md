@@ -1,6 +1,6 @@
-# WW-IFRAME
+# WW-WEBAPP-SEARCH
 
-This is an element for Weweb, to display an iframe.
+This is an element for Weweb, a webapp style search bar.
 
 ## Installation
 
@@ -12,4 +12,4 @@ To serve locally, run `npm run serve --port=[PORT]`, and then go to Weweb editor
 
 ## Build
 
-Before release, you can check build error by running `npm run build --name="ww-iframe" --type="element"`
+Before release, you can check build error by running `npm run build --name="ww-webapp-search" --type="element"`
