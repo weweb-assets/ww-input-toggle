@@ -1,32 +1,35 @@
 export default {
-    "options": {
-        "sizable": true
+    options: {
     },
-    "editor": {
+    editor: {
         "label": {
-            "en": "iFrame",
-            "fr": "iFrame"
+            "en": "Search bar",
+            "fr": "Search bar"
         },
-        icon: 'fontawesome/regular/window-maximize'
+        icon: 'fontawesome/solid/search'
     },
     properties: {
-        source: {
+        variable: {
             label: {
-                en: 'iFrame source'
+               en: 'Associated variable',
             },
-            type: "Textarea",
-            "options": {
-                "row": 20
+            type: 'Variable',
+            options: {
+                type: 'String',
             },
-            bindable: true,
-            defaultValue: '',
+            defaultValue: null,
         },
-        changeSource: {
-            type: 'Button',
-            editorOnly: true,
-            "options": {
-                "text": { "en": "Edit iFrame source", "fr": "Editer la source iFrame" },
-                "action": "editIFrame"
+        submitEvent: {
+            label: {
+                "en": "Font weight",
+                "fr": "Graisse"
+            },
+            type: "TextSelect",
+            options: {
+                options: [
+                    { "value": null, "label": { "en": "Default", "fr": "Par défaut" } },
+                    { "value": 100, "label": { "en": "100 - Thin" } },
+                ]
             }
         }
     }
