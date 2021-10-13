@@ -81,7 +81,7 @@ export default {
         },
         textInput: {
             hidden: true,
-            defaultValue: { isWwObject: true, type: '11f6b322-be78-4286-b986-c1b62cf15ebf' },
+            defaultValue: { isWwObject: true, type: '9c263ffe-7da7-45e7-832c-543aef56faef' },
         },
     },
 };
