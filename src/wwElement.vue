@@ -4,7 +4,7 @@
             ref="searchInput"
             class="submitButton"
             v-bind="content.textInput"
-            @input-change="handleInputChange"
+            @input="handleInputChange"
         ></wwElement>
         <wwElement class="submitButton" v-bind="content.submitButton" @click="handleClick"></wwElement>
     </div>
@@ -18,7 +18,7 @@ export default {
         /* wwEditor:end */
         content: { type: Object, required: true },
     },
-    emits: ['update:content'],
+    emits: ['update:content', 'trigger-event'],
     data() {
         return {
             debounce: null,
@@ -47,16 +47,17 @@ export default {
             };
         },
     },
-    mounted() {},
+    mounted() {
+        wwLib.$on('ww-inpunt-text:change', this.handleInputChange);
+    },
     methods: {
         handleInputChange(event) {
-            console.log(event);
-            // if (this.content.submitEvent !== 'debounce') return;
+            if (this.content.submitEvent !== 'debounce') return;
 
-            // clearTimeout(this.debounce);
-            // this.debounce = setTimeout(() => {
-            //     this.updateVariableValue(event.target.value);
-            // }, this.content.debounceDelay);
+            clearTimeout(this.debounce);
+            this.debounce = setTimeout(() => {
+                this.updateVariableValue(event.target.value);
+            }, this.content.debounceDelay);
         },
         handleClick() {
             const value = this.$refs.searchInput.value;
@@ -69,9 +70,13 @@ export default {
         updateVariableValue(value) {
             if (!this.content.variable) return;
             wwLib.wwVariable.updateValue(this.content.variable, value);
+            const eventName = this.content.submitEvent === 'debounce' ? 'change' : 'submit';
+            this.$emit('trigger-event', { name: eventName, event: { value } });
         },
     },
-    beforeUnmounted() {},
+    beforeUnmounted() {
+        wwLib.$off('ww-inpunt-text:change', this.handleInputChange);
+    },
 };
 </script>
 

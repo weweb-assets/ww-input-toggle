@@ -6,6 +6,10 @@ export default {
         },
         icon: 'fontawesome/solid/search',
     },
+    triggerEvents: [
+        { name: 'submit', label: { en: 'On submit' }, event: { value: '' } },
+        { name: 'change', label: { en: 'On change' }, event: { value: '' } },
+    ],
     properties: {
         submitEvent: {
             label: {
