@@ -70,6 +70,7 @@ export default {
         updateVariableValue(value) {
             if (!this.content.variable) return;
             wwLib.wwVariable.updateValue(this.content.variable, value);
+            // set name
             const eventName = this.content.submitEvent === 'debounce' ? 'change' : 'submit';
             this.$emit('trigger-event', { name: eventName, event: { value } });
         },
