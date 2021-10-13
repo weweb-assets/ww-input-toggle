@@ -11,33 +11,6 @@ export default {
         { name: 'change', label: { en: 'On change' }, event: { value: '' } },
     ],
     properties: {
-        submitEvent: {
-            label: {
-                en: 'Submit event',
-                fr: 'Evenement de soumission',
-            },
-            type: 'TextSelect',
-            options: {
-                options: [
-                    { value: 'debounce', label: { en: 'On change' } },
-                    { value: 'button', label: { en: 'Button' } },
-                ],
-            },
-            responsive: true,
-            bindable: true,
-            defaultValue: 'debounce',
-        },
-        debounceDelay: {
-            type: 'Length',
-            label: {
-                en: 'Delay',
-                fr: 'Délai',
-            },
-            options: {
-                unitChoices: [{ value: 'ms', label: 'ms', min: 1, max: 5000 }],
-            },
-            defaultValue: '500ms',
-        },
         buttonPosition: {
             hidden: content => content.submitEvent !== 'button',
             label: {
@@ -56,12 +29,53 @@ export default {
             responsive: true,
             defaultValue: 'right',
         },
+        inputWidth: {
+            type: 'Length',
+            label: {
+                en: 'Input width',
+                fr: 'Input width',
+            },
+            options: {
+                unitChoices: [{ value: '%', label: '%', min: 0, max: 100 }],
+            },
+            defaultValue: '50%',
+        },
+        submitEvent: {
+            label: {
+                en: 'Submit event',
+                fr: 'Evenement de soumission',
+            },
+            type: 'TextSelect',
+            options: {
+                options: [
+                    { value: 'debounce', label: { en: 'On change' } },
+                    { value: 'button', label: { en: 'Button' } },
+                ],
+            },
+            section: 'settings',
+            responsive: true,
+            bindable: true,
+            defaultValue: 'debounce',
+        },
+        debounceDelay: {
+            type: 'Length',
+            label: {
+                en: 'Delay',
+                fr: 'Délai',
+            },
+            options: {
+                unitChoices: [{ value: 'ms', label: 'ms', min: 1, max: 5000 }],
+            },
+            section: 'settings',
+            defaultValue: '500ms',
+        },
         enterKey: {
             type: 'OnOff',
             label: {
                 en: 'Submitting by pressing enter',
                 fr: 'Submitting by pressing enter',
             },
+            section: 'settings',
             defaultValue: true,
         },
         variable: {
@@ -72,6 +86,7 @@ export default {
             options: {
                 type: 'String',
             },
+            section: 'settings',
             bindable: true,
             defaultValue: null,
         },
