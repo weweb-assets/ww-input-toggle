@@ -1,7 +1,7 @@
 {
-    "name": "ww-webapp-search",
+    "name": "ww-webapp-checkbox",
     "repository": {
-        "url": "https://github.com/weweb-assets/ww-webapp-search"
+        "url": "https://github.com/weweb-assets/ww-webapp-checkbox"
     },
     "version": "3.1.0",
     "license": "MIT",

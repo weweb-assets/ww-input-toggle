@@ -1,6 +1,6 @@
 <template>
-    <div class="ww-webapp-search" :style="cssVariables" :class="{ editing: isEditing, selected: isSelected }">
-        <div class="input-container">
+    <div class="ww-webapp-checkbox" :style="cssVariables" :class="{ editing: isEditing, selected: isSelected }">
+        <!-- <div class="input-container">
             <wwElement
                 ref="searchInput"
                 class="textInput"
@@ -10,10 +10,12 @@
         </div>
         <div v-if="content.submitEvent === 'button'" class="button-container">
             <wwElement class="submitButton" v-bind="content.submitButton" @click="handleClick"></wwElement>
-        </div>
+        </div> -->
+
+        <input type="checkbox">
 
         <!-- wwEditor:start -->
-        <div class="ww-webapp-search__menu">
+        <div class="ww-webapp-checkbox__menu">
             <wwEditorIcon small name="fontawesome/solid/search" />
         </div>
         <!-- wwEditor:end -->
@@ -103,7 +105,7 @@ export default {
 :root {
     --container-direction: row;
 }
-.ww-webapp-search {
+.ww-webapp-checkbox {
     width: 100%;
     display: flex;
     flex-direction: var(--container-direction);
@@ -139,7 +141,7 @@ export default {
         right: -1px;
     }
     &.selected {
-        > .ww-webapp-search__status {
+        > .ww-webapp-checkbox__status {
             opacity: 1;
             pointer-events: all;
         }
@@ -155,7 +157,7 @@ export default {
             pointer-events: none;
             z-index: 10;
         }
-        > .ww-webapp-search__menu {
+        > .ww-webapp-checkbox__menu {
             opacity: 1;
             pointer-events: all;
         }
