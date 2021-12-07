@@ -27,6 +27,7 @@ export default {
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
         content: { type: Object, required: true },
+        wwFrontState:  { type: Object, required: true },
     },
     emits: ['update:content:effect', 'trigger-event'],
     data() {
@@ -82,7 +83,7 @@ export default {
         'content.isEmbeddedContainer': {
             async handler(value) {
                 if (value && !this.content.embeddedContainer) {
-                    const embeddedContainer = await wwLib.createElement('ww-flexbox');
+                    const embeddedContainer = await wwLib.createElement('ww-flexbox', {}, {}, this.wwFrontState.sectionId);
                     this.$emit('update:content:effect', { embeddedContainer });
                 } else if (!value) {
                     this.$emit('update:content:effect', { embeddedContainer: null });
