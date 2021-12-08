@@ -37,7 +37,7 @@ export default {
     },
     mounted() {
         if (this.content.initialValue !== undefined) {
-            this.checked = !!value;
+            this.checked = !!this.content.initialValue;
         }
     },
     computed: {
