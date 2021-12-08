@@ -60,6 +60,7 @@ export default {
             label: {
                 'en': 'Initial value'
             },
+            type: 'OnOff',
             section: 'settings',
             bindable: true,
             hidden: content => content.variable

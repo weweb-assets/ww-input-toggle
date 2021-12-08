@@ -35,6 +35,11 @@ export default {
             internalChecked: false,
         };
     },
+    mounted() {
+        if (this.content.initialValue !== undefined) {
+            this.checked = !!value;
+        }
+    },
     computed: {
         checked: {
             get() {
@@ -91,14 +96,6 @@ export default {
                 }
             },
         },
-        'content.initialValue': {
-            handler(value) {
-                if (value !== undefined) {
-                    this.checked = !!value;
-                }
-            },
-            immediate: true,
-        }
     },
 };
 </script>
