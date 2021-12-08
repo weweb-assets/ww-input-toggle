@@ -56,6 +56,14 @@ export default {
             bindable: true,
             defaultValue: null,
         },
+        initialValue: {
+            label: {
+                'en': 'Initial value'
+            },
+            section: 'settings',
+            bindable: true,
+            hidden: content => content.variable
+        },
         embeddedContainer: {
             hidden: true,
             defaultValue: null,

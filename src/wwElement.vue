@@ -44,6 +44,7 @@ export default {
             set(value) {
                 if (!this.content.variable) {
                     this.internalChecked = value;
+                    this.$emit('trigger-event', { name: 'change', event: { value } });
                     return;
                 }
                 wwLib.wwVariable.updateValue(this.content.variable, value);
@@ -90,6 +91,14 @@ export default {
                 }
             },
         },
+        'content.initialValue': {
+            handler(value) {
+                if (value !== undefined) {
+                    this.checked = !!value;
+                }
+            },
+            immediate: true,
+        }
     },
 };
 </script>
