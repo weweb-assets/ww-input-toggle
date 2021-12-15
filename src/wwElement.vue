@@ -23,7 +23,7 @@ export default {
         content: { type: Object, required: true },
         uid: { type: String, required: true },
     },
-    emits: ['update:content:effect', 'trigger-event', 'add:state', 'remove:state'],
+    emits: ['update:content:effect', 'trigger-event'],
     setup(props) {
         const internalVariableId = computed(() => props.content.variableId);
         const variableId = wwLib.wwVariable.useComponentVariable(props.uid, 'value', false, internalVariableId);
@@ -55,26 +55,22 @@ export default {
         },
         cssVariables() {
             const unitValue = wwLib.wwUtils.getLengthUnit(this.content.selectorSize)[0];
-            const scale = unitValue / 100;
-            const transitionAjustement = 100 - unitValue;
+            const securedValue = Math.min(Math.max(unitValue, 10), 100);
+            const scale = securedValue / 100;
+            const transitionAjustement = 100 - securedValue;
 
             return {
                 '--selector-size': scale,
                 '--transition-ajustement': `${transitionAjustement}%`,
                 '--selector-color-off': this.content.selectorColorOff,
                 '--selector-color-on': this.content.selectorColorOn,
+                '--background-color': this.value ? this.content.backgroundColorOn : this.content.backgroundColorOff,
             };
         },
     },
     watch: {
-        internalValue: {
-            handler(value) {
-                this.$emit(value ? 'add:state' : 'remove:state', { state: 'toggled' });
-            },
-            imediate: true,
-        },
         isEditing() {
-            this.value = false;
+            if (!this.isEditing) this.value = false;
         },
     },
     mounted() {
@@ -92,25 +88,31 @@ export default {
 
 <style lang="scss" scoped>
 .ww-webapp-toggle {
-    --ww-radio-transition: all 0.5s ease;
-    --ww-radio-color-1: var(--ww-color-blue-500);
-    --ww-radio-color-2: var(--ww-color-theme-dark-0);
-
-    &:disabled {
-        cursor: not-allowed;
-        --ww-radio-color-1: var(--ww-color-theme-dark-300);
-    }
-
     outline: none;
     padding: 0;
     box-sizing: content-box;
     position: relative;
-    background-color: inherit;
+    background-color: var(--background-color);
     border: inherit;
     border-radius: inherit;
     transition: inherit;
     height: inherit;
     width: inherit;
+
+    .aspect-ratio-box {
+        height: 0;
+        overflow: hidden;
+        padding-top: 591.44px / 1127.34px * 100%;
+        background: white;
+        position: relative;
+    }
+    .aspect-ratio-box-inside {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
 
     .selector {
         position: absolute;
@@ -118,7 +120,7 @@ export default {
         left: 0px;
         transform: scale3d(var(--selector-size), var(--selector-size), var(--selector-size));
 
-        height: calc(100%);
+        height: 100%;
         aspect-ratio: 1 / 1;
 
         background-color: var(--selector-color-off);
