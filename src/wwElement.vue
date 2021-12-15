@@ -34,6 +34,38 @@ export default {
             internalValue: false,
         };
     },
+    computed: {
+        isEditing() {
+            /* wwEditor:start */
+            return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
+            /* wwEditor:end */
+            // eslint-disable-next-line no-unreachable
+            return false;
+        },
+        value: {
+            get() {
+                if (!this.variableId) return this.internalValue;
+                return wwLib.wwVariable.getValue(this.variableId);
+            },
+            set(value) {
+                this.internalValue = value;
+                this.$emit('trigger-event', { name: 'change', event: { value } });
+                if (this.variableId) wwLib.wwVariable.updateValue(this.variableId, value);
+            },
+        },
+        cssVariables() {
+            const unitValue = wwLib.wwUtils.getLengthUnit(this.content.selectorSize)[0];
+            const scale = unitValue / 100;
+            const transitionAjustement = 100 - unitValue;
+
+            return {
+                '--selector-size': scale,
+                '--transition-ajustement': `${transitionAjustement}%`,
+                '--selector-color-off': this.content.selectorColorOff,
+                '--selector-color-on': this.content.selectorColorOn,
+            };
+        },
+    },
     watch: {
         internalValue: {
             handler(value) {
@@ -53,46 +85,6 @@ export default {
     methods: {
         toggleValue() {
             this.value = !this.value;
-        },
-    },
-    computed: {
-        isEditing() {
-            /* wwEditor:start */
-            return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
-            /* wwEditor:end */
-            // eslint-disable-next-line no-unreachable
-            return false;
-        },
-        value: {
-            get() {
-                if (!this.variableId) return this.internalValue;
-                return wwLib.wwVariable.getValue(this.variableId);
-            },
-            set(value) {
-                this.internalValue = value;
-                this.$emit('trigger-event', { name: 'change', event: { value } });
-                if (this.variableId) wwLib.wwVariable.updateValue(this.variableId, value);
-                console.log(value);
-            },
-        },
-        cssVariables() {
-            const unitValue = wwLib.wwUtils.getLengthUnit(this.content.selectorSize)[0];
-            const scale = unitValue / 100;
-            const transitionAjustement = 100 - unitValue;
-
-            return {
-                '--selector-size': scale,
-                '--transition-ajustement': `${transitionAjustement}%`,
-                '--selector-color-off': this.content.selectorColorOff,
-                '--selector-color-on': this.content.selectorColorOn,
-            };
-        },
-        isEditing() {
-            /* wwEditor:start */
-            return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
-            /* wwEditor:end */
-            // eslint-disable-next-line no-unreachable
-            return false;
         },
     },
 };
