@@ -6,7 +6,7 @@
         :class="{ '-active': value }"
         :aria-checked="value"
         :style="cssVariables"
-        @click="toggleValue()"
+        @click="toggleValue"
     >
         <div class="selector" :class="{ '-active': value }"></div>
     </button>
