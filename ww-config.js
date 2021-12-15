@@ -1,10 +1,10 @@
 export default {
     editor: {
         label: {
-            en: 'Checkbox',
-            fr: 'Checkbox',
+            en: 'Toggle',
+            fr: 'Toggle',
         },
-        icon: 'fontawesome/solid/check-square',
+        icon: 'fontawesome/solid/toggle-on',
     },
     triggerEvents: [{ name: 'change', label: { en: 'On change' }, event: { value: '' } }],
     properties: {
@@ -13,44 +13,15 @@ export default {
             type: 'Text',
             options: { placeholder: 'Name' },
             section: 'settings',
-            defaultValue: 'checkbox',
+            defaultValue: 'Toggle',
         },
-        isEmbeddedContainer: {
-            type: 'OnOff',
-            label: {
-                en: 'Embedded container',
-                fr: 'Embedded container',
-            },
-            section: 'settings',
-            responsive: true,
-            defaultValue: false,
-        },
-        containerPosition: {
-            hidden: content => !content.isEmbeddedContainer,
-            label: {
-                en: 'Container position',
-                fr: 'Position du container',
-            },
-            type: 'TextSelect',
-            options: {
-                options: [
-                    { value: 'right', label: { en: 'Right' } },
-                    { value: 'left', label: { en: 'Left' } },
-                    { value: 'top', label: { en: 'Top' } },
-                    { value: 'bottom', label: { en: 'Bottom' } },
-                ],
-            },
-            section: 'settings',
-            responsive: true,
-            defaultValue: 'right',
-        },
-        variable: {
+        variableId: {
             label: {
                 en: 'Associated variable (Boolean)',
             },
             type: 'Variable',
             options: {
-                type: 'Boolean',
+                type: ['Boolean'],
             },
             section: 'settings',
             bindable: true,
@@ -58,16 +29,54 @@ export default {
         },
         initialValue: {
             label: {
-                'en': 'Initial value'
+                en: 'Initial value',
             },
             type: 'OnOff',
             section: 'settings',
             bindable: true,
-            hidden: content => content.variable
+            hidden: content => content.variableId,
         },
-        embeddedContainer: {
-            hidden: true,
-            defaultValue: null,
+        selectorSize: {
+            type: 'Length',
+            label: {
+                en: 'Selector size',
+                fr: 'Taille du selecteur',
+            },
+            options: {
+                unitChoices: [{ value: '%', label: '%', min: 10, max: 100 }],
+            },
+            defaultValue: '100%',
+        },
+        selectorColorOff: {
+            type: 'Color',
+            label: {
+                en: 'Selector color (off)',
+                fr: 'Couleur du selecteur (off)',
+            },
+            options: {
+                nullable: true,
+                gradient: true,
+            },
+        },
+        selectorColorOn: {
+            type: 'Color',
+            label: {
+                en: 'Selector color (on)',
+                fr: 'Couleur du selecteur (on)',
+            },
+            options: {
+                nullable: true,
+                gradient: true,
+            },
+        },
+        toggleState: {
+            type: 'Button',
+            options: {
+                text: { en: 'Toggle state', fr: 'Toggle state' },
+                color: 'blue',
+                action: 'toggleValue',
+            },
+            editorOnly: true,
         },
     },
 };

@@ -1,60 +1,91 @@
 <template>
-    <div
-        class="ww-webapp-checkbox"
+    <button
+        type="button"
+        class="ww-webapp-toggle"
+        role="switch"
+        :class="{ '-active': value }"
+        :aria-checked="value"
         :style="cssVariables"
-        :class="{ editing: isEditing, selected: isSelected }"
-        @click="checked = !checked"
+        @click="toggleValue()"
     >
-        <input ref="checkboxInput" v-model="checked" type="checkbox" />
-        <wwElement
-            v-if="content.isEmbeddedContainer"
-            class="embedded-container"
-            v-bind="content.embeddedContainer"
-        ></wwElement>
-
-        <!-- wwEditor:start -->
-        <div class="ww-webapp-checkbox__menu">
-            <wwEditorIcon small name="fontawesome/solid/check-square" />
-        </div>
-        <!-- wwEditor:end -->
-    </div>
+        <div class="selector" :class="{ '-active': value }"></div>
+    </button>
 </template>
 
 <script>
+import { computed } from 'vue';
+
 export default {
     props: {
         /* wwEditor:start */
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
         content: { type: Object, required: true },
-        wwFrontState:  { type: Object, required: true },
+        uid: { type: String, required: true },
     },
-    emits: ['update:content:effect', 'trigger-event'],
+    emits: ['update:content:effect', 'trigger-event', 'add:state', 'remove:state'],
+    setup(props) {
+        const internalVariableId = computed(() => props.content.variableId);
+        const variableId = wwLib.wwVariable.useComponentVariable(props.uid, 'value', false, internalVariableId);
+        return { variableId };
+    },
     data() {
         return {
-            internalChecked: false,
+            internalValue: false,
         };
     },
+    watch: {
+        internalValue: {
+            handler(value) {
+                this.$emit(value ? 'add:state' : 'remove:state', { state: 'toggled' });
+            },
+            imediate: true,
+        },
+        isEditing() {
+            this.value = false;
+        },
+    },
     mounted() {
-        if (this.content.initialValue !== undefined) {
-            this.checked = !!this.content.initialValue;
+        if (this.content.initialValue !== undefined && !this.content.variableId) {
+            this.value = !!this.content.initialValue;
         }
     },
+    methods: {
+        toggleValue() {
+            this.value = !this.value;
+        },
+    },
     computed: {
-        checked: {
+        isEditing() {
+            /* wwEditor:start */
+            return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
+            /* wwEditor:end */
+            // eslint-disable-next-line no-unreachable
+            return false;
+        },
+        value: {
             get() {
-                if (!this.content.variable) return this.internalChecked;
-                return wwLib.wwVariable.getValue(this.content.variable);
+                if (!this.variableId) return this.internalValue;
+                return wwLib.wwVariable.getValue(this.variableId);
             },
             set(value) {
-                if (!this.content.variable) {
-                    this.internalChecked = value;
-                    this.$emit('trigger-event', { name: 'change', event: { value } });
-                    return;
-                }
-                wwLib.wwVariable.updateValue(this.content.variable, value);
+                this.internalValue = value;
                 this.$emit('trigger-event', { name: 'change', event: { value } });
+                if (this.variableId) wwLib.wwVariable.updateValue(this.variableId, value);
+                console.log(value);
             },
+        },
+        cssVariables() {
+            const unitValue = wwLib.wwUtils.getLengthUnit(this.content.selectorSize)[0];
+            const scale = unitValue / 100;
+            const transitionAjustement = 100 - unitValue;
+
+            return {
+                '--selector-size': scale,
+                '--transition-ajustement': `${transitionAjustement}%`,
+                '--selector-color-off': this.content.selectorColorOff,
+                '--selector-color-on': this.content.selectorColorOn,
+            };
         },
         isEditing() {
             /* wwEditor:start */
@@ -63,112 +94,55 @@ export default {
             // eslint-disable-next-line no-unreachable
             return false;
         },
-        isSelected() {
-            /* wwEditor:start */
-            return this.wwEditorState.isSelected;
-            /* wwEditor:end */
-            // eslint-disable-next-line no-unreachable
-            return false;
-        },
-        cssVariables() {
-            let flexDirection = 'row';
-            if (this.content.containerPosition === 'left' || this.content.containerPosition === 'right') {
-                if (this.content.containerPosition === 'left') flexDirection = 'row-reverse';
-                else flexDirection = 'row';
-            } else {
-                if (this.content.containerPosition === 'top') flexDirection = 'column-reverse';
-                else flexDirection = 'column';
-            }
-
-            return {
-                '--container-direction': flexDirection,
-            };
-        },
-    },
-    watch: {
-        'content.isEmbeddedContainer': {
-            async handler(value) {
-                if (value && !this.content.embeddedContainer) {
-                    const embeddedContainer = await wwLib.createElement('ww-flexbox', {}, {}, this.wwFrontState.sectionId);
-                    this.$emit('update:content:effect', { embeddedContainer });
-                } else if (!value) {
-                    this.$emit('update:content:effect', { embeddedContainer: null });
-                }
-            },
-        },
     },
 };
 </script>
 
 <style lang="scss" scoped>
-:root {
-    --container-direction: row;
-}
-.ww-webapp-checkbox {
-    display: flex;
-    flex-direction: var(--container-direction);
-    align-items: center;
+.ww-webapp-toggle {
+    --ww-radio-transition: all 0.5s ease;
+    --ww-radio-color-1: var(--ww-color-blue-500);
+    --ww-radio-color-2: var(--ww-color-theme-dark-0);
 
-    /* wwEditor:start */
-    &__status {
-        position: absolute;
-        top: -1px;
-        color: var(--ww-color-white);
-        padding: var(--ww-spacing-00) var(--ww-spacing-01);
-        border-radius: var(--ww-spacing-00);
-        background-color: var(--ww-color-blue-500);
-        z-index: 10;
-        opacity: 0;
-        pointer-events: none;
-        right: -1px;
+    &:disabled {
+        cursor: not-allowed;
+        --ww-radio-color-1: var(--ww-color-theme-dark-300);
     }
-    &.selected {
-        > .ww-webapp-checkbox__status {
-            opacity: 1;
-            pointer-events: all;
-        }
-    }
-    &.editing:hover {
-        & > .border {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border: 1px solid var(--ww-editor-color);
-            pointer-events: none;
-            z-index: 10;
-        }
-        > .ww-webapp-checkbox__menu {
-            opacity: 1;
-            pointer-events: all;
-        }
-    }
-    &__menu {
-        display: flex;
+
+    outline: none;
+    padding: 0;
+    box-sizing: content-box;
+    position: relative;
+    background-color: inherit;
+    border: inherit;
+    border-radius: inherit;
+    transition: inherit;
+    height: inherit;
+    width: inherit;
+
+    .selector {
         position: absolute;
         top: 0px;
-        left: 5px;
-        transform: translate(-50%, -50%);
-        border-radius: 100%;
-        padding: var(--ww-spacing-01);
-        transition: opacity 0.2s ease;
-        z-index: 101;
-        cursor: pointer;
-        background-color: var(--ww-color-blue-500);
-        color: var(--ww-color-white);
-        justify-content: center;
-        align-items: center;
-        opacity: 0;
-        pointer-events: none;
-        &:after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(45deg);
+        left: 0px;
+        transform: scale3d(var(--selector-size), var(--selector-size), var(--selector-size));
+
+        height: calc(100%);
+        aspect-ratio: 1 / 1;
+
+        background-color: var(--selector-color-off);
+        border-radius: inherit;
+        transition: inherit;
+    }
+
+    &.-active {
+        .selector {
+            transition: inherit;
+            background-color: var(--selector-color-on);
+            top: 0px;
+            left: 100%;
+            transform: scale3d(var(--selector-size), var(--selector-size), var(--selector-size))
+                translateX(calc(-100% - var(--transition-ajustement)));
         }
     }
-    /* wwEditor:end */
 }
 </style>
