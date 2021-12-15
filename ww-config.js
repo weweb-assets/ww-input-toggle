@@ -69,6 +69,28 @@ export default {
                 gradient: true,
             },
         },
+        backgroundColorOff: {
+            type: 'Color',
+            label: {
+                en: 'Background color (off)',
+                fr: 'Couleur de fond (off)',
+            },
+            options: {
+                nullable: true,
+                gradient: true,
+            },
+        },
+        backgroundColorOn: {
+            type: 'Color',
+            label: {
+                en: 'Background color (on)',
+                fr: 'Couleur de fond (on)',
+            },
+            options: {
+                nullable: true,
+                gradient: true,
+            },
+        },
         toggleState: {
             type: 'Button',
             options: {
