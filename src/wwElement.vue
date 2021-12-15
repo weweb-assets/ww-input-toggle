@@ -92,27 +92,12 @@ export default {
     padding: 0;
     box-sizing: content-box;
     position: relative;
-    background-color: var(--background-color);
+    background: var(--background-color);
     border: inherit;
     border-radius: inherit;
     transition: inherit;
     height: inherit;
     width: inherit;
-
-    .aspect-ratio-box {
-        height: 0;
-        overflow: hidden;
-        padding-top: 591.44px / 1127.34px * 100%;
-        background: white;
-        position: relative;
-    }
-    .aspect-ratio-box-inside {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
 
     .selector {
         position: absolute;
@@ -123,7 +108,7 @@ export default {
         height: 100%;
         aspect-ratio: 1 / 1;
 
-        background-color: var(--selector-color-off);
+        background: var(--selector-color-off);
         border-radius: inherit;
         transition: inherit;
     }
@@ -131,7 +116,7 @@ export default {
     &.-active {
         .selector {
             transition: inherit;
-            background-color: var(--selector-color-on);
+            background: var(--selector-color-on);
             top: 0px;
             left: 100%;
             transform: scale3d(var(--selector-size), var(--selector-size), var(--selector-size))
