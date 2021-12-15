@@ -69,14 +69,5 @@ export default {
                 gradient: true,
             },
         },
-        toggleState: {
-            type: 'Button',
-            options: {
-                text: { en: 'Toggle state', fr: 'Toggle state' },
-                color: 'blue',
-                action: 'toggleValue',
-            },
-            editorOnly: true,
-        },
     },
 };
