@@ -69,9 +69,13 @@ export default {
         },
     },
     watch: {
-        isEditing() {
-            if (!this.isEditing) this.value = false;
+         /* wwEditor:start */
+        'content.initialValue'(value) {
+            if (value !== undefined && !this.content.variableId) {
+                this.value = value;
+            }
         },
+        /* wwEditor:end */
     },
     mounted() {
         if (this.content.initialValue !== undefined && !this.content.variableId) {
