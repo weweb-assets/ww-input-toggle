@@ -24,8 +24,8 @@ export default {
                 types: ['Boolean'],
             },
             section: 'settings',
-            bindable: true,
             defaultValue: null,
+            hidden: content => !content.variableId,
         },
         initialValue: {
             label: {
