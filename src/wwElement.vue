@@ -69,9 +69,6 @@ export default {
         },
     },
     watch: {
-        isEditing() {
-            if (!this.isEditing) this.value = false;
-        },
          /* wwEditor:start */
         'content.initialValue'(value) {
             if (value !== undefined && !this.content.variableId) {
