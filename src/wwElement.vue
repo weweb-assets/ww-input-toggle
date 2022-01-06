@@ -9,48 +9,39 @@
         @click="toggleValue"
     >
         <div class="selector" :class="{ '-active': value }"></div>
+        <input type="checkbox" :value="value" class="ww-webapp-toggle__hidden" :name="wwElementState.name" />
     </button>
 </template>
 
 <script>
-import { computed } from 'vue';
-
 export default {
     props: {
-        /* wwEditor:start */
-        wwEditorState: { type: Object, required: true },
-        /* wwEditor:end */
         content: { type: Object, required: true },
         uid: { type: String, required: true },
+        wwElementState: { type: Object, required: true },
     },
     emits: ['update:content:effect', 'trigger-event'],
     setup(props) {
-        const internalVariableId = computed(() => props.content.variableId);
-        const variableId = wwLib.wwVariable.useComponentVariable(props.uid, 'value', false, internalVariableId);
-        return { variableId };
+        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable(props.uid, 'value', false);
+        return { variableValue, setValue };
     },
     data() {
         return {
-            internalValue: false,
+            internalValue: this.variableValue,
         };
     },
     computed: {
-        isEditing() {
-            /* wwEditor:start */
-            return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
-            /* wwEditor:end */
-            // eslint-disable-next-line no-unreachable
-            return false;
-        },
         value: {
             get() {
-                if (!this.variableId) return this.internalValue;
-                return wwLib.wwVariable.getValue(this.variableId);
+                return !!this.variableValue;
             },
             set(value) {
-                this.internalValue = value;
-                this.$emit('trigger-event', { name: 'change', event: { value } });
-                if (this.variableId) wwLib.wwVariable.updateValue(this.variableId, value);
+                value = !!value;
+                if (value !== this.value) {
+                    this.internalValue = value;
+                    this.$emit('trigger-event', { name: 'change', event: { value } });
+                    this.setValue(value);
+                }
             },
         },
         cssVariables() {
@@ -69,18 +60,9 @@ export default {
         },
     },
     watch: {
-         /* wwEditor:start */
-        'content.initialValue'(value) {
-            if (value !== undefined && !this.content.variableId) {
-                this.value = value;
-            }
+        'content.value'(value) {
+            this.value = !!value;
         },
-        /* wwEditor:end */
-    },
-    mounted() {
-        if (this.content.initialValue !== undefined && !this.content.variableId) {
-            this.value = !!this.content.initialValue;
-        }
     },
     methods: {
         toggleValue() {
@@ -126,6 +108,11 @@ export default {
             transform: scale3d(var(--selector-size), var(--selector-size), var(--selector-size))
                 translateX(calc(-100% - var(--transition-ajustement)));
         }
+    }
+    &__hidden {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
     }
 }
 </style>
