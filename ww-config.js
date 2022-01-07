@@ -8,33 +8,13 @@ export default {
     },
     triggerEvents: [{ name: 'change', label: { en: 'On change' }, event: { value: '' } }],
     properties: {
-        name: {
-            label: { en: 'Name', fr: 'Name' },
-            type: 'Text',
-            options: { placeholder: 'Name' },
-            section: 'settings',
-            defaultValue: 'Toggle',
-        },
-        variableId: {
-            label: {
-                en: 'Associated variable (Boolean)',
-            },
-            type: 'Variable',
-            options: {
-                types: ['Boolean'],
-            },
-            section: 'settings',
-            defaultValue: null,
-            hidden: content => !content.variableId,
-        },
-        initialValue: {
+        value: {
             label: {
                 en: 'Initial value',
             },
             type: 'OnOff',
             section: 'settings',
-            bindable: true,
-            hidden: content => content.variableId,
+            bindable: true
         },
         selectorSize: {
             type: 'Length',
