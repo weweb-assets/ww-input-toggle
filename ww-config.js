@@ -10,7 +10,7 @@ export default {
     properties: {
         value: {
             label: {
-                en: 'Initial value',
+                en: 'Value',
             },
             type: 'OnOff',
             section: 'settings',
