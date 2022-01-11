@@ -6,7 +6,7 @@
         :class="{ '-active': value }"
         :aria-checked="value"
         :style="cssVariables"
-        @click="toggleValue"
+        @click="handleManualInput"
     >
         <div class="selector" :class="{ '-active': value }"></div>
         <input type="checkbox" :value="value" class="ww-webapp-toggle__hidden" :name="wwElementState.name" />
@@ -22,27 +22,17 @@ export default {
     },
     emits: ['update:content:effect', 'trigger-event'],
     setup(props) {
-        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable(props.uid, 'value', false);
+        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable(
+            props.uid,
+            'value',
+            props.content.value === undefined ? false : props.content.value
+        );
+
         return { variableValue, setValue };
     },
-    data() {
-        return {
-            internalValue: this.variableValue,
-        };
-    },
     computed: {
-        value: {
-            get() {
-                return !!this.variableValue;
-            },
-            set(value) {
-                value = !!value;
-                if (value !== this.value) {
-                    this.internalValue = value;
-                    this.$emit('trigger-event', { name: 'change', event: { value } });
-                    this.setValue(value);
-                }
-            },
+        value() {
+            return !!this.variableValue;
         },
         cssVariables() {
             const unitValue = wwLib.wwUtils.getLengthUnit(this.content.selectorSize)[0];
@@ -60,13 +50,16 @@ export default {
         },
     },
     watch: {
-        'content.value'(value) {
-            this.value = !!value;
+        'content.value'(newValue, OldValue) {
+            if (newValue === OldValue) return;
+            this.setValue(!!newValue);
+            this.$emit('trigger-event', { name: 'initValueChange', event: { value: !!newValue } });
         },
     },
     methods: {
-        toggleValue() {
-            this.value = !this.value;
+        handleManualInput() {
+            this.setValue(!this.value);
+            this.$emit('trigger-event', { name: 'change', event: { value: !this.value } });
         },
     },
 };
