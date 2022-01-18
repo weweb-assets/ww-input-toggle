@@ -99,8 +99,7 @@ export default {
             background: var(--selector-color-on);
             top: 0px;
             left: 100%;
-            transform: scale3d(var(--selector-size), var(--selector-size), var(--selector-size))
-                translateX(calc(-100% - var(--transition-ajustement)));
+            transform: translateX(-100%) scale3d(var(--selector-size), var(--selector-size), var(--selector-size));
         }
     }
     &__hidden {
