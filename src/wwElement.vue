@@ -22,17 +22,18 @@ export default {
     },
     emits: ['update:content:effect', 'trigger-event'],
     setup(props) {
-        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable(
-            props.uid,
-            'value',
-            props.content.value === undefined ? false : props.content.value
-        );
+        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable({
+            uid: props.uid,
+            name: 'value',
+            defaultValue: props.content.value,
+            sanitizer: value => !!value
+        });
 
         return { variableValue, setValue };
     },
     computed: {
         value() {
-            return !!this.variableValue;
+            return this.variableValue;
         },
         cssVariables() {
             const unitValue = wwLib.wwUtils.getLengthUnit(this.content.selectorSize)[0];
@@ -50,17 +51,18 @@ export default {
         },
     },
     watch: {
-        'content.value'(newValue) {
-            newValue = !!newValue;
-            if (newValue === this.value) return;
-            this.setValue(newValue);
-            this.$emit('trigger-event', { name: 'initValueChange', event: { value: newValue } });
+        'content.value'(value) {
+            const { newValue, hasChanged } = this.setValue(newValue);
+
+            if (hasChanged) {
+                this.$emit('trigger-event', { name: 'initValueChange', event: { value: newValue } });
+            }
         },
     },
     methods: {
         handleManualInput() {
-            this.setValue(!this.value);
-            this.$emit('trigger-event', { name: 'change', event: { value: !this.value } });
+            const { newValue } = this.setValue(!this.value);
+            this.$emit('trigger-event', { name: 'change', event: { value: newValue } });
         },
     },
 };
