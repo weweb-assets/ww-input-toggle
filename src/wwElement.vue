@@ -9,7 +9,7 @@
         @click="handleManualInput"
     >
         <div class="selector" :class="{ '-active': value }"></div>
-        <input type="checkbox" :value="value" class="ww-webapp-toggle__hidden" :name="wwElementState.name" />
+        <input type="checkbox" :value="value" class="ww-webapp-toggle__hidden" :name="wwElementState.name" :required="content.required" />
     </button>
 </template>
 
