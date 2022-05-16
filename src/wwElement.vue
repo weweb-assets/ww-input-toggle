@@ -6,7 +6,7 @@
         :class="{ '-active': value }"
         :aria-checked="value"
         :style="cssVariables"
-        @click="handleManualInput"
+        @click="handleManualInput($event)"
     >
         <div class="selector" :class="{ '-active': value }"></div>
         <input type="checkbox" :value="value" class="ww-webapp-toggle__hidden" :name="wwElementState.name" :required="content.required" />
@@ -61,7 +61,7 @@ export default {
     methods: {
         handleManualInput() {
             this.setValue(!this.value);
-            this.$emit('trigger-event', { name: 'change', event: { value: !this.value } });
+            this.$emit('trigger-event', { name: 'change', event: { domEvent: $event, value: !this.value } });
         },
     },
 };
