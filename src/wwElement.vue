@@ -59,7 +59,7 @@ export default {
         },
     },
     methods: {
-        handleManualInput() {
+        handleManualInput($event) {
             this.setValue(!this.value);
             this.$emit('trigger-event', { name: 'change', event: { domEvent: $event, value: !this.value } });
         },
