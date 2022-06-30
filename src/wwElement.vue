@@ -74,11 +74,8 @@ export default {
     box-sizing: content-box;
     position: relative;
     background: var(--background-color);
-    border: inherit;
     border-radius: inherit;
     transition: inherit;
-    height: inherit;
-    width: inherit;
 
     .selector {
         position: absolute;
