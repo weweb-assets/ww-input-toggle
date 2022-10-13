@@ -38,6 +38,14 @@ export default {
             },
             /* wwEditor:end */
         },
+        readonly: {
+            label: { en: 'Read only', fr: 'Lecture seule' },
+            type: 'OnOff',
+            section: 'settings',
+            bindable: true,
+            defaultValue: false,
+            hidden: (content, sidePanelContent, boundProps, wwProps) => !!(wwProps && wwProps.readonly !== undefined),
+        },
         selectorSize: {
             type: 'Length',
             label: {
@@ -48,6 +56,7 @@ export default {
                 unitChoices: [{ value: '%', label: '%', min: 10, max: 100 }],
             },
             defaultValue: '100%',
+            states: true,
         },
         selectorColorOff: {
             type: 'Color',
@@ -59,6 +68,7 @@ export default {
                 nullable: true,
                 gradient: true,
             },
+            states: true,
         },
         selectorColorOn: {
             type: 'Color',
@@ -70,6 +80,7 @@ export default {
                 nullable: true,
                 gradient: true,
             },
+            states: true,
         },
         backgroundColorOff: {
             type: 'Color',
@@ -81,6 +92,7 @@ export default {
                 nullable: true,
                 gradient: true,
             },
+            states: true,
         },
         backgroundColorOn: {
             type: 'Color',
@@ -92,6 +104,7 @@ export default {
                 nullable: true,
                 gradient: true,
             },
+            states: true,
         },
         toggleState: {
             type: 'Button',
