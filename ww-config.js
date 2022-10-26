@@ -4,7 +4,7 @@ export default {
             en: 'Toggle',
             fr: 'Toggle',
         },
-        icon: 'fontawesome/solid/toggle-on',
+        icon: 'toggle',
     },
     triggerEvents: [
         { name: 'change', label: { en: 'On change' }, event: { value: '' }, default: true },
