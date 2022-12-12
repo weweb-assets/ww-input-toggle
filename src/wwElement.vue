@@ -3,7 +3,12 @@
         type="button"
         class="ww-webapp-toggle"
         role="switch"
-        :class="{ '-active': value }"
+        :class="{
+            '-active': value,
+            /* wwEditor:start */
+            '-editing': isEditing,
+            /* wwEditor:end */
+        }"
         :aria-checked="value"
         :style="cssVariables"
         @click="handleManualInput($event)"
@@ -44,6 +49,13 @@ export default {
         return { variableValue, setValue };
     },
     computed: {
+        isEditing() {
+            /* wwEditor:start */
+            return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
+            /* wwEditor:end */
+            // eslint-disable-next-line no-unreachable
+            return false;
+        },
         value() {
             return !!this.variableValue;
         },
@@ -132,6 +144,11 @@ export default {
             transform: translateX(-100%) scale3d(var(--selector-size), var(--selector-size), var(--selector-size));
         }
     }
+    /* wwEditor:start */
+    &.-editing {
+        pointer-events: none;
+    }
+    /* wwEditor:end */
     &__hidden {
         position: absolute;
         opacity: 0;
