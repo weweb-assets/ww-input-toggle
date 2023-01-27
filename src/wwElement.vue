@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { computed } from "vue";
+
 export default {
     props: {
         content: { type: Object, required: true },
@@ -43,7 +45,7 @@ export default {
             uid: props.uid,
             name: 'value',
             type: 'boolean',
-            defaultValue: props.content.value === undefined ? false : props.content.value,
+            defaultValue: computed(() => props.content.value === undefined ? false : props.content.value),
         });
 
         return { variableValue, setValue };
