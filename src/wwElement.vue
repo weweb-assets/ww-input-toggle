@@ -104,8 +104,9 @@ export default {
     },
     methods: {
         handleManualInput($event) {
-            this.setValue(!this.value);
-            this.$emit('trigger-event', { name: 'change', event: { domEvent: $event, value: !this.value } });
+            const value = !this.value
+            this.setValue(value);
+            this.$emit('trigger-event', { name: 'change', event: { domEvent: $event, value } });
         },
     },
 };
