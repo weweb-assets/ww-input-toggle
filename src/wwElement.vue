@@ -123,6 +123,7 @@ export default {
     background: var(--background-color);
     border-radius: inherit;
     transition: inherit;
+    display: block;
 
     .selector {
         position: absolute;
