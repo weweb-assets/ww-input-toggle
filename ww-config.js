@@ -57,6 +57,8 @@ export default {
             },
             defaultValue: '100%',
             states: true,
+            classes: true,
+            responsive: true,
         },
         selectorColorOff: {
             type: 'Color',
@@ -69,6 +71,8 @@ export default {
                 gradient: true,
             },
             states: true,
+            classes: true,
+            responsive: true,
         },
         selectorColorOn: {
             type: 'Color',
@@ -81,6 +85,8 @@ export default {
                 gradient: true,
             },
             states: true,
+            classes: true,
+            responsive: true,
         },
         backgroundColorOff: {
             type: 'Color',
@@ -93,6 +99,8 @@ export default {
                 gradient: true,
             },
             states: true,
+            classes: true,
+            responsive: true,
         },
         backgroundColorOn: {
             type: 'Color',
@@ -105,6 +113,8 @@ export default {
                 gradient: true,
             },
             states: true,
+            classes: true,
+            responsive: true,
         },
         toggleState: {
             type: 'Button',
