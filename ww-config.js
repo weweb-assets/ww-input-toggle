@@ -6,6 +6,9 @@ export default {
         },
         icon: 'toggle',
     },
+    options: {
+        ignoredStyleProperties: ['background'],
+    },
     triggerEvents: [
         { name: 'change', label: { en: 'On change' }, event: { value: '' }, default: true },
         { name: 'initValueChange', label: { en: 'On init value change' }, event: { value: '' } },
