@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed } from 'vue';
 
 export default {
     props: {
@@ -45,7 +45,7 @@ export default {
             uid: props.uid,
             name: 'value',
             type: 'boolean',
-            defaultValue: computed(() => props.content.value === undefined ? false : props.content.value),
+            defaultValue: computed(() => (props.content.value === undefined ? false : props.content.value)),
         });
 
         return { variableValue, setValue };
@@ -106,7 +106,10 @@ export default {
     },
     methods: {
         handleManualInput($event) {
-            const value = !this.value
+            /* wwEditor:start */
+            if (this.isEditing) return;
+            /* wwEditor:end */
+            const value = !this.value;
             this.setValue(value);
             this.$emit('trigger-event', { name: 'change', event: { domEvent: $event, value } });
         },
@@ -121,9 +124,6 @@ export default {
     box-sizing: content-box;
     position: relative;
     background: var(--background-color);
-    border-radius: inherit;
-    transition: inherit;
-    display: block;
 
     .selector {
         position: absolute;
@@ -149,8 +149,11 @@ export default {
         }
     }
     /* wwEditor:start */
-    &.-editing {
-        pointer-events: none;
+    &.-editing::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
     }
     /* wwEditor:end */
     &__hidden {
