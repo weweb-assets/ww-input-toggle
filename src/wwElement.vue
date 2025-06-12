@@ -90,6 +90,7 @@ export default {
         },
         isReadonly() {
             /* wwEditor:start */
+            if (this.isEditing) return false;
             if (this.wwEditorState.isSelected) {
                 return this.wwElementState.states.includes('readonly');
             }
