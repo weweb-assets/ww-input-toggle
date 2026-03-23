@@ -17,7 +17,7 @@ export default {
         ignoredStyleProperties: ['background'],
     },
     triggerEvents: [
-        { name: 'change', label: { en: 'On change' }, event: { value: '' }, default: true, description: "Run when the value changes." },
+        { name: 'change', label: { en: 'On change' }, event: { value: '' }, default: true, description: "Run when the toggle is switched on or off." },
         { name: 'initValueChange', label: { en: 'On init value change' }, event: { value: '' }, description: "Run when the initial value changes." },
     ],
     properties: {
