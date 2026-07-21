@@ -12,7 +12,7 @@
         :aria-checked="value"
         :style="cssVariables"
         @click="handleManualInput($event)"
-        :disabled="isReadonly"
+        :disabled="isDisabled"
     >
         <div class="selector" :class="{ '-active': value }"></div>
         <input
@@ -98,6 +98,12 @@ export default {
             return this.wwElementState.props.readonly === undefined
                 ? this.content.readonly
                 : this.wwElementState.props.readonly;
+        },
+        isDisabled() {
+            /* wwEditor:start */
+            if (this.isEditing) return false;
+            /* wwEditor:end */
+            return this.isReadonly;
         },
     },
     watch: {
